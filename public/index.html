@@ -1,0 +1,15 @@
+<input id="searchInput" placeholder="検索語を入力" />
+<button onclick="search()">検索</button>
+<div id="results"></div>
+
+<script>
+  async function search() {
+    const q = document.getElementById('searchInput').value;
+    const res = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
+    const data = await res.json();
+    const items = data.organic || [];
+    document.getElementById('results').innerHTML = items.map(item =>
+      `<div><a href="${item.link}" target="_blank">${item.title}</a><p>${item.snippet}</p></div>`
+    ).join('');
+  }
+</script>
