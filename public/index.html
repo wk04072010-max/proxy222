@@ -26,7 +26,7 @@
       document.getElementById('results').innerHTML = items.map(item => {
         const encoded = btoa(item.link);
         return `<div class="card">
-          <a href="/proxy?u=${encoded}" target="_blank">${item.title}</a>
+          <a href="/view?site=${encoded}" target="_blank">${item.title}</a>
           <p>${item.snippet}</p>
         </div>`;
       }).join('');
