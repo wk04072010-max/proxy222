@@ -24,9 +24,10 @@ app.get('/api/search', async (req, res) => {
   }
 });
 
-app.get('/proxy', async (req, res) => {
-  const rawUrl = req.query.u;
-  const url = Buffer.from(rawUrl, 'base64').toString('utf-8');
+// 🔐 URL暗号化 + ヘッダー偽装 + JSレンダリング
+app.get('/view', async (req, res) => {
+  const raw = req.query.site;
+  const url = Buffer.from(raw, 'base64').toString('utf-8');
 
   try {
     const browser = await puppeteer.launch({
@@ -35,6 +36,10 @@ app.get('/proxy', async (req, res) => {
     });
     const page = await browser.newPage();
     await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64)');
+    await page.setExtraHTTPHeaders({
+      'Accept-Language': 'ja,en-US;q=0.9,en;q=0.8',
+      'Referer': 'https://www.google.com/'
+    });
     await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
     const content = await page.content();
     await browser.close();
