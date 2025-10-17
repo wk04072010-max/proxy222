@@ -1,15 +1,36 @@
-<input id="searchInput" placeholder="検索語を入力" />
-<button onclick="search()">検索</button>
-<div id="results"></div>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>検索ポータル</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    input { width: 300px; padding: 8px; }
+    button { padding: 8px 12px; }
+    .result { margin-top: 20px; }
+    .card { margin-bottom: 15px; }
+  </style>
+</head>
+<body>
+  <h1>🔍 検索ポータル</h1>
+  <input id="searchInput" placeholder="検索語を入力" />
+  <button onclick="search()">検索</button>
+  <div id="results" class="result"></div>
 
-<script>
-  async function search() {
-    const q = document.getElementById('searchInput').value;
-    const res = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
-    const data = await res.json();
-    const items = data.organic || [];
-    document.getElementById('results').innerHTML = items.map(item =>
-      `<div><a href="${item.link}" target="_blank">${item.title}</a><p>${item.snippet}</p></div>`
-    ).join('');
-  }
-</script>
+  <script>
+    async function search() {
+      const q = document.getElementById('searchInput').value;
+      const res = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
+      const data = await res.json();
+      const items = data.organic || [];
+      document.getElementById('results').innerHTML = items.map(item => {
+        const encoded = btoa(item.link);
+        return `<div class="card">
+          <a href="/proxy?u=${encoded}" target="_blank">${item.title}</a>
+          <p>${item.snippet}</p>
+        </div>`;
+      }).join('');
+    }
+  </script>
+</body>
+</html>
